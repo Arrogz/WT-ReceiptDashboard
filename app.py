@@ -6,15 +6,21 @@ app = Flask(__name__)
 CORS(app)  # allows your React dev server (different port) to call this API
 
 
-@app.route("/receipts")
+@app.route("/receipts", methods =["GET"])
 def get_receipts():
     status = request.args.get("status")  
-
+    sort_by = request.args.get("sort")
+    order = request.args.get('order', default='asc')
+    
+    result = receipts
+    
     if status:
-        filtered = [r for r in receipts if r["status"].lower() == status.lower()]
-        return jsonify(filtered)
+        result = [r for r in result if r["status"].lower() == status.lower()]
 
-    return jsonify(receipts)
+    if sort_by and sort_by in result[0]:
+        result = sorted(result, key=lambda r: r[sort_by], reverse=(order == "desc"))
+
+    return jsonify(result)
 
 
 @app.route("/receipts/<receipt_id>", methods=["PATCH"])
