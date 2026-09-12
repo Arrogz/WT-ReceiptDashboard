@@ -43,22 +43,30 @@ class Receipt(db.Model):
 @app.route("/")
 def index():
     status = request.args.get("status")
+    vendor = request.args.getlist("vendor")
     sort_by = request.args.get("sort")
     order = request.args.get("order", default="asc")
-
+    
     query = Receipt.query
     if status:
         query = query.filter(db.func.lower(Receipt.status) == status.lower())
-
+    if vendor:
+        lowered_vendors = [v.lower() for v in vendor]
+        query = query.filter(db.func.lower(Receipt.vendor).in_(lowered_vendors))
+        
     all_receipts = query.all()
     result = [r.to_dict() for r in all_receipts]
 
     if sort_by and result and sort_by in result[0]:
         result = sorted(result, key=lambda r: r[sort_by], reverse=(order == "desc"))
 
-    return render_template("app.html", receipts=result, status=status, sort_by=sort_by, order=order)
+    return render_template("app.html", receipts=result, status=status, vendor=vendor, sort_by=sort_by, order=order)
 
-
+@app.route("/vendors", methods = ["GET"])
+def get_vendor():
+    receipts = Receipt.query.all()
+    vendors = sorted({r.vendor for r in receipts})
+    return jsonify(vendors)
 
 @app.route("/receipts", methods =["GET"])
 def get_receipts():
@@ -77,6 +85,7 @@ def get_receipts():
         result = sorted(result, key=lambda r: r[sort_by], reverse=(order == "desc"))
     
     return jsonify(result)
+
 
 @app.route("/receipts/", methods=["POST"])
 def create_receipt():

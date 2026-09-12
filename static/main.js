@@ -17,6 +17,48 @@ header.addEventListener('click', (e) => {
   window.location.href = url.toString();
 });
 
+async function loadVendorFilters() {
+    const response = await fetch('/vendors');
+    const vendors = await response.json();
+
+    const params = new URLSearchParams(window.location.search);
+    const selectedVendors = params.getAll('vendor');
+
+    const filterBar = document.getElementById('vendor-filter-bar');
+    filterBar.innerHTML = '';
+
+    vendors.forEach(vendor => {
+        const label = document.createElement('label');
+        label.className = 'vendor-filter';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'vendor-checkbox';
+        checkbox.value = vendor;
+        checkbox.checked = selectedVendors.includes(vendor);
+
+        checkbox.addEventListener('change', updateVendorFilter);
+
+        label.appendChild(checkbox);
+        label.append(' ' + vendor);
+        filterBar.appendChild(label);
+    });
+}
+
+function updateVendorFilter() {
+    const params = new URLSearchParams(window.location.search);
+    params.delete('vendor');
+
+    document.querySelectorAll('.vendor-checkbox:checked').forEach(checked => {
+        params.append('vendor', checked.value);
+    });
+
+    window.location.search = params.toString();
+}
+
+loadVendorFilters();
+
+
 const deleteButtons = document.querySelectorAll('.receipt-status')
 
 deleteButtons.forEach(td => {

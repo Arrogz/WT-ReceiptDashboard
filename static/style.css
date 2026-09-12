@@ -479,8 +479,8 @@ pre {
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
   margin-right: -15px;
-  margin-left: -15px; }
-
+  margin-left: -15px;}
+  
 .no-gutters {
   margin-right: 0;
   margin-left: 0; }
@@ -8186,21 +8186,6 @@ h1, h2, h3, h4, h5,
   scrollbar-color: #6366f1 transparent;
   background: transparent;
 }
-html::-webkit-scrollbar {
-  width: 5px;
-  color: #6366f1 transparent;
-  
-}
-
-html::-webkit-scrollbar-track {
-  background: transparent;
-} 
-
-html::-webkit-scrollbar-thumb {
-  background: #6366f1; /* Color of the scrollbar handle */
-  border-radius: 10px; /* Makes it perfectly rounded */
-  border: 2px solid #6366f1;
-}
 .table {
   min-width: 1000px !important;
   text-align: center;
@@ -8219,6 +8204,10 @@ html::-webkit-scrollbar-thumb {
     border-bottom: 3px solid #2b3035;
     font-size: 14px; }
 
+.receipt-details{
+    display: flex;
+}
+
 td{
     transition: transform 0.1s ease-in-out;
 }
@@ -8233,6 +8222,7 @@ td:hover{
     color: white;
     transition: color 0.3s ease-in-out;
     background-color: #1089ff;
+    font-size: 1.2em;
 }
 
 #table_header th:hover{
@@ -8242,4 +8232,22 @@ td:hover{
 .fw-bold {
     font-weight: bold;
     text-decoration: underline 2px;
+}
+
+
+
+html::-webkit-scrollbar {
+  width: 5px;
+  color: #6366f1 transparent;
+  
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+} 
+
+html::-webkit-scrollbar-thumb {
+  background: #6366f1; /* Color of the scrollbar handle */
+  border-radius: 10px; /* Makes it perfectly rounded */
+  border: 2px solid #6366f1;
 }
