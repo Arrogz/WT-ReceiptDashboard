@@ -8251,6 +8251,7 @@ td:hover{
 .vendor-filter{
     display: flex;
     align-items: center;
+    justify-content: center;
     padding: 2px 2px;
     background-color: #2b2f38;
     border: 1px solid #3f4553;
@@ -8276,6 +8277,71 @@ td:hover{
     border-color: #1089ff;
     color: #ffffff;
 }
+
+.status-filter{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2px 2px;
+    background-color: #2b2f38;
+    border: 1px solid #3f4553;
+    border-radius: 5px;
+    color: #d0d3d9;
+    font-size: clamp(5px, 1.5vw, 14px);
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    user-select: none;
+}
+
+
+.status-filter-approved:hover{
+    border-color: #7aff75;
+    color: #ffffff;
+}
+
+.status-checkbox-approved{
+    display: none
+}
+
+.status-filter-approved:has(.status-checkbox-approved:checked){
+    background-color: #7aff75;
+    border-color: #7aff75;
+    color: black;
+}
+
+
+.status-filter-flagged:hover{
+    border-color: white;
+    color: #ffffff;
+}
+
+.status-checkbox-flagged{
+    display: none
+}
+
+.status-filter-flagged:has(.status-checkbox-flagged:checked){
+    background-color: white;
+    border-color: white;
+    color: black;
+}
+
+
+.status-filter-rejected:hover{
+    border-color: red;
+    color: #ffffff;
+}
+
+.status-checkbox-rejected{
+    display: none
+}
+
+.status-filter-rejected:has(.status-checkbox-rejected:checked){
+    background-color: red;
+    border-color: red;
+    color: white;
+}
+
+
 
 html::-webkit-scrollbar {
   width: 5px;

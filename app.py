@@ -24,7 +24,7 @@ class Receipt(db.Model):
     id = Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
     vendor = db.Column(db.String, nullable=False)
     amount = db.Column(db.Float, nullable=False)
-    status = db.Column(db.String, nullable=False, default="pending")
+    status = db.Column(db.String, nullable=False, default="Pending")
     record_date = db.Column(db.Date, nullable=True, default=date.today)
     confidence = db.Column(db.Float, nullable=True)
 
@@ -95,7 +95,7 @@ def create_receipt():
     receipt = Receipt(
         vendor=data.get("vendor"),
         amount=data.get("amount"),
-        status=data.get("status", "pending"),
+        status=data.get("status", "Pending"),
         record_date= datetime.strptime(data.get("record_date"), "%Y-%m-%d").date() if data.get("record_date") else None,
         confidence=data.get("confidence"),
     )
@@ -135,7 +135,7 @@ with app.app_context():
             db.session.add(Receipt(
                 vendor=r.get("vendor"),
                 amount=r.get("amount"),
-                status=r.get("status", "pending"),
+                status=r.get("status", "Pending"),
                 record_date = datetime.strptime(r.get("record_date"), '%Y-%m-%d').date(),
                 confidence=r.get("confidence"),
             ))
