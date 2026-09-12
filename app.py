@@ -38,51 +38,42 @@ class Receipt(db.Model):
             "record_date": self.record_date,
         }
         
-@app.route("/")
-def index():
+def apply_filters_and_sort(query):
     status = request.args.getlist("status")
     vendor = request.args.getlist("vendor")
     sort_by = request.args.get("sort")
     order = request.args.get("order", default="asc")
-    
-    query = Receipt.query
+
     if status:
         lowered_status = [s.lower() for s in status]
         query = query.filter(db.func.lower(Receipt.status).in_(lowered_status))
     if vendor:
         lowered_vendors = [v.lower() for v in vendor]
         query = query.filter(db.func.lower(Receipt.vendor).in_(lowered_vendors))
-        
-    all_receipts = query.all()
-    result = [r.to_dict() for r in all_receipts]
+
+    result = [r.to_dict() for r in query.all()]
 
     if sort_by and result and sort_by in result[0]:
         result = sorted(result, key=lambda r: r[sort_by], reverse=(order == "desc"))
 
+    return result, status, vendor, sort_by, order
+
+
+@app.route("/")
+def index():
+    result, status, vendor, sort_by, order = apply_filters_and_sort(Receipt.query)
     return render_template("app.html", receipts=result, status=status, vendor=vendor, sort_by=sort_by, order=order)
 
-@app.route("/vendors", methods = ["GET"])
+
+@app.route("/vendors", methods=["GET"])
 def get_vendor():
-    receipts = Receipt.query.all()
-    vendors = sorted({r.vendor for r in receipts})
+    vendors = sorted({r.vendor for r in Receipt.query.all()})
     return jsonify(vendors)
 
-@app.route("/receipts", methods =["GET"])
+
+@app.route("/receipts", methods=["GET"])
 def get_receipts():
-    status = request.args.get("status")  
-    sort_by = request.args.get("sort")
-    order = request.args.get('order', default='asc')
-    
-    query = Receipt.query
-    if status:
-        query = query.filter(db.func.lower(Receipt.status) == status.lower())
-
-    receipts = query.all()
-    result = [r.to_dict() for r in receipts]
-
-    if sort_by and result and sort_by in result[0]:
-        result = sorted(result, key=lambda r: r[sort_by], reverse=(order == "desc"))
-    
+    result, _, _, _, _ = apply_filters_and_sort(Receipt.query)
     return jsonify(result)
 
 
