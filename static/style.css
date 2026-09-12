@@ -447,12 +447,15 @@ pre {
   overflow-y: scroll; }
 
 .container {
+  display: block;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
   margin-right: auto;
-  margin-left: auto; }
-  @media (min-width: 576px) {
+  margin-left: auto; 
+  max-width: 100vw;
+}
+  /* @media (min-width: 576px) {
     .container {
       max-width: 540px; } }
   @media (min-width: 768px) {
@@ -463,7 +466,7 @@ pre {
       max-width: 960px; } }
   @media (min-width: 1200px) {
     .container {
-      max-width: 1140px; } }
+      max-width: 1140px; } } */
 
 .container-fluid {
   width: 100%;
@@ -8180,19 +8183,20 @@ h1, h2, h3, h4, h5,
   background-position: center center; }
 
 .table-wrap {
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: hidden;
   scrollbar-width: thin;
   scrollbar-color: #6366f1 transparent;
   background: transparent;
 }
 .table {
-  min-width: 1000px !important;
+  /* min-width: 1000px !important; */
+  min-width: 80vw;
   text-align: center;
   width: 100%; }
   .table thead th {
     border: none;
-    padding: 20px 30px;
+    padding: 1vw 1vh;
     font-size: 14px;
     color: #fff;
     border-bottom: 4px solid #2b3035; }
@@ -8200,12 +8204,15 @@ h1, h2, h3, h4, h5,
     margin-bottom: 10px; }
   .table tbody th, .table tbody td {
     border: none;
-    padding: 20px 30px;
+    padding: 1vw 1vh;
     border-bottom: 3px solid #2b3035;
-    font-size: 14px; }
+    
+    font-size: clamp(11px, 1.5vw, 14px);}
+    
 
 .receipt-details{
-    display: flex;
+    display: inline-flex;
+    max-width: 100vw;
 }
 
 td{
@@ -8222,7 +8229,7 @@ td:hover{
     color: white;
     transition: color 0.3s ease-in-out;
     background-color: #1089ff;
-    font-size: 1.2em;
+    font-size: clamp(13px, 2vw, 16px);
 }
 
 #table_header th:hover{
@@ -8234,7 +8241,41 @@ td:hover{
     text-decoration: underline 2px;
 }
 
+.filter-bar{
+    display: block;
+    flex-wrap: wrap;
+    padding: 12px 10px 20px;
+    
+}
 
+.vendor-filter{
+    display: flex;
+    align-items: center;
+    padding: 2px 2px;
+    background-color: #2b2f38;
+    border: 1px solid #3f4553;
+    border-radius: 5px;
+    color: #d0d3d9;
+    font-size: clamp(5px, 1.5vw, 14px);
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    user-select: none;
+}
+
+.vendor-filter:hover{
+    border-color: #1089ff;
+    color: #ffffff;
+}
+
+.vendor-checkbox{
+    display: none
+}
+
+.vendor-filter:has(.vendor-checkbox:checked){
+    background-color: #1089ff;
+    border-color: #1089ff;
+    color: #ffffff;
+}
 
 html::-webkit-scrollbar {
   width: 5px;

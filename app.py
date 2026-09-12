@@ -18,7 +18,6 @@ app.config['DEBUG'] = False
 
 @app.errorhandler(InternalServerError)
 def handle_error(error):
-    # Option A: If you are building an API and want to return JSON
     return "<h1>403 Forbidden</h1><p>You do not have access to this page.</p>"
 
 class Receipt(db.Model):
@@ -38,7 +37,6 @@ class Receipt(db.Model):
             "confidence": self.confidence,
             "record_date": self.record_date,
         }
-        
         
 @app.route("/")
 def index():

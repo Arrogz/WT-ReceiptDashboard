@@ -11,41 +11,39 @@
         <section class="ftco-section">
             <div class="container">
                 <div class="row justify-content-center">
-                    <div class="col-md-6 text-center mb-5">
-                        <h1 class="heading-section"><strong>Receipts Dashboard</strong></h1>
-                    </div>
-                </div>
-                <div class = "receipt-details">
-                    <div class="filter-bar" id="vendor-filter-bar"></div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="table-wrap">
-                                <table class="table table-bordered table-dark table-hover">
-                                    <thead>
-                                        <tr id ="table_header">
-                                            <th id="table_vendor" class="{{ 'fw-bold' if sort_by == 'vendor' else '' }}">Vendor</th>
-                                            <th id="table_amount" class="{{ 'fw-bold' if sort_by == 'amount' else '' }}">Amount</th>
-                                            <th id="table_record_date" class="{{ 'fw-bold' if sort_by == 'record_date' else '' }}">Date</th>
-                                            <th id="table_status" class="{{ 'fw-bold' if sort_by == 'status' else '' }}">Status</th>
-                                            <th id="table_confidence" class="{{ 'fw-bold' if sort_by == 'confidence' else '' }}">Confidence</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for r in receipts %}
-                                        <tr>
-                                            <td>{{ r.vendor }}</td>
-                                            <td>${{ "%.2f"|format(r.amount) }}</td>
-                                            <td>{{ r.record_date }}</td>
-                                            <td  class = "receipt-status" style="{% if r.status == 'Approved' %}color: #7aff75; {% elif r.status == 'Rejected' %}color: red; {% endif %}"><strong>{{ r.status }}</strong></td>
-                                            <td>{{ r.confidence }}%</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                    <div class = "receipt-details">
+                        <div class="filter-bar" id="vendor-filter-bar"></div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-wrap">
+                                    <table class="table table-bordered table-sm table-dark table-hover">
+                                        <thead>
+                                            <tr id ="table_header">
+                                                <th id="table_vendor" class="{{ 'fw-bold' if sort_by == 'vendor' else '' }}">Vendor</th>
+                                                <th id="table_amount" class="{{ 'fw-bold' if sort_by == 'amount' else '' }}">Amount</th>
+                                                <th id="table_record_date" class="{{ 'fw-bold' if sort_by == 'record_date' else '' }}">Date</th>
+                                                <th id="table_status" class="{{ 'fw-bold' if sort_by == 'status' else '' }}">Status</th>
+                                                <th id="table_confidence" class="{{ 'fw-bold' if sort_by == 'confidence' else '' }}">Confidence</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for r in receipts %}
+                                            <tr>
+                                                <td>{{ r.vendor }}</td>
+                                                <td>${{ "%.2f"|format(r.amount) }}</td>
+                                                <td>{{ r.record_date }}</td>
+                                                <td  class = "receipt-status" style="{% if r.status == 'Approved' %}color: #7aff75; {% elif r.status == 'Rejected' %}color: red; {% endif %}"><strong>{{ r.status }}</strong></td>
+                                                <td>{{ r.confidence }}%</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                
             </div>
         </section>
         <script src="static/main.js"></script>
