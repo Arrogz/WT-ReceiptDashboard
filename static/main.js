@@ -58,6 +58,35 @@ function updateVendorFilter() {
 
 loadVendorFilters();
 
+const statuscheckboxes = document.querySelectorAll('.status-checkbox');
+
+statuscheckboxes.forEach(checkbox =>{
+    checkbox.addEventListener('change', updateStatusCheckbox)
+})
+
+function updateStatusCheckbox(){
+    const params = new URLSearchParams(window.location.search);
+    params.delete('status');
+    document.querySelectorAll('.status-checkbox:checked').forEach(checked => {
+        params.append('status', checked.value);
+    });
+
+    window.location.search = params.toString();
+}
+
+function rememberStatusCheckbox(){
+    const params = new URLSearchParams(window.location.search);
+    const allStatus = params.getAll('status');
+    for(curStatus of allStatus){
+        
+        for(curBox of statuscheckboxes){
+            if(curBox.value == curStatus)
+            curBox.checked = true;
+        }
+    }
+}
+
+rememberStatusCheckbox()
 
 const deleteButtons = document.querySelectorAll('.receipt-status')
 

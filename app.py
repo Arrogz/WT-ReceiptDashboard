@@ -40,14 +40,15 @@ class Receipt(db.Model):
         
 @app.route("/")
 def index():
-    status = request.args.get("status")
+    status = request.args.getlist("status")
     vendor = request.args.getlist("vendor")
     sort_by = request.args.get("sort")
     order = request.args.get("order", default="asc")
     
     query = Receipt.query
     if status:
-        query = query.filter(db.func.lower(Receipt.status) == status.lower())
+        lowered_status = [s.lower() for s in status]
+        query = query.filter(db.func.lower(Receipt.status).in_(lowered_status))
     if vendor:
         lowered_vendors = [v.lower() for v in vendor]
         query = query.filter(db.func.lower(Receipt.vendor).in_(lowered_vendors))
