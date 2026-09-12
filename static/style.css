@@ -8180,8 +8180,27 @@ h1, h2, h3, h4, h5,
   background-position: center center; }
 
 .table-wrap {
-  overflow: hidden;}
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #6366f1 transparent;
+  background: transparent;
+}
+html::-webkit-scrollbar {
+  width: 5px;
+  color: #6366f1 transparent;
+  
+}
 
+html::-webkit-scrollbar-track {
+  background: transparent;
+} 
+
+html::-webkit-scrollbar-thumb {
+  background: #6366f1; /* Color of the scrollbar handle */
+  border-radius: 10px; /* Makes it perfectly rounded */
+  border: 2px solid #6366f1;
+}
 .table {
   min-width: 1000px !important;
   text-align: center;
@@ -8199,7 +8218,28 @@ h1, h2, h3, h4, h5,
     padding: 20px 30px;
     border-bottom: 3px solid #2b3035;
     font-size: 14px; }
-  
+
+td{
+    transition: transform 0.1s ease-in-out;
+}
+td:hover{
+    transform: scale(1.4);
+}
 .receipt-status:hover{
-    transform: scale(1.2);
+    transform: scale(2);
+}
+
+#table_header th{
+    color: white;
+    transition: color 0.3s ease-in-out;
+    background-color: #1089ff;
+}
+
+#table_header th:hover{
+    color: black;
+}
+
+.fw-bold {
+    font-weight: bold;
+    text-decoration: underline 2px;
 }

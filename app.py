@@ -117,7 +117,7 @@ def delete_receipt(receipt_id):
 
     db.session.delete(receipt)
     db.session.commit()
-    return jsonify({"message": "Receipt deleted successfully"}), 204
+    return "", 204
 
 
 with app.app_context():

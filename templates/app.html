@@ -20,12 +20,12 @@
                         <div class="table-wrap">
                             <table class="table table-bordered table-dark table-hover">
                                 <thead>
-                                    <tr style="text-decoration: underline;" id ="table_header">
-                                        <th id="table_vendor">Vendor</th>
-                                        <th id="table_amount">Amount</th>
-                                        <th id="table_record_date">Date</th>
-                                        <th id="table_status">Status</th>
-                                        <th id="table_confidence">Confidence</th>
+                                    <tr id ="table_header">
+                                        <th id="table_vendor" class="{{ 'fw-bold' if sort_by == 'vendor' else '' }}">Vendor</th>
+                                        <th id="table_amount" class="{{ 'fw-bold' if sort_by == 'amount' else '' }}">Amount</th>
+                                        <th id="table_record_date" class="{{ 'fw-bold' if sort_by == 'record_date' else '' }}">Date</th>
+                                        <th id="table_status" class="{{ 'fw-bold' if sort_by == 'status' else '' }}">Status</th>
+                                        <th id="table_confidence" class="{{ 'fw-bold' if sort_by == 'confidence' else '' }}">Confidence</th>
                                     </tr>
                                 </thead>
                                 <tbody>
