@@ -2,9 +2,10 @@ from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import UUID, Column
-import uuid
+from werkzeug.exceptions import InternalServerError, abort
 from data import receipts
 from datetime import date, datetime
+import uuid
 
 app = Flask(__name__)
 CORS(app)  # allows your React dev server (different port) to call this API
@@ -12,6 +13,14 @@ CORS(app)  # allows your React dev server (different port) to call this API
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///receipts.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
+
+app.config['DEBUG'] = False 
+
+@app.errorhandler(InternalServerError)
+def handle_error(error):
+    # Option A: If you are building an API and want to return JSON
+    return "<h1>403 Forbidden</h1><p>You do not have access to this page.</p>"
+
 class Receipt(db.Model):
     id = Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
     vendor = db.Column(db.String, nullable=False)
@@ -80,7 +89,7 @@ def create_receipt():
         vendor=data.get("vendor"),
         amount=data.get("amount"),
         status=data.get("status", "pending"),
-        record_date=datetime.strptime(data.get("record_date"), "%Y-%m-%d").date(),
+        record_date= datetime.strptime(data.get("record_date"), "%Y-%m-%d").date() if data.get("record_date") else None,
         confidence=data.get("confidence"),
     )
     db.session.add(receipt)
@@ -109,6 +118,7 @@ def delete_receipt(receipt_id):
     db.session.delete(receipt)
     db.session.commit()
     return jsonify({"message": "Receipt deleted successfully"}), 204
+
 
 with app.app_context():
     db.create_all()

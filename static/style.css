@@ -8162,7 +8162,7 @@ h1, h2, h3, h4, h5,
   background: #1089ff !important; }
 
 .ftco-section {
-  padding: 7em 0; }
+  padding: 3em 0; }
 
 .ftco-no-pt {
   padding-top: 0; }
@@ -8200,3 +8200,6 @@ h1, h2, h3, h4, h5,
     border-bottom: 3px solid #2b3035;
     font-size: 14px; }
   
+.receipt-status:hover{
+    transform: scale(1.2);
+}
