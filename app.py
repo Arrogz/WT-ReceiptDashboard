@@ -99,12 +99,17 @@ def get_vendor():
     vendors = sorted({r.vendor for r in Receipt.query.all()})
     return jsonify(vendors)
 
-
 @app.route("/receipts", methods=["GET"])
 def get_receipts():
-    result, _, _, _, _ = apply_filters_and_sort(Receipt.query)
-    return jsonify(result)
-
+    result, _, _, _, _, pagination  = apply_filters_and_sort(Receipt.query)
+    return jsonify({
+    "receipts": result,
+    "page": pagination.page,
+    "per_page": pagination.per_page,
+    "total": pagination.total,
+    "pages": pagination.pages,
+    }
+)
 
 @app.route("/receipts/", methods=["POST"])
 def create_receipt():

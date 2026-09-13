@@ -165,6 +165,7 @@ async function deleteReceipt(receiptId) {
             if (row) {
                 row.remove();
             }
+            window.location.reload();
         }
     } catch (error) {
         console.error('Error deleting receipt:', error);
