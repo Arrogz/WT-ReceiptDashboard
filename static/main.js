@@ -102,6 +102,35 @@ clearbtn.addEventListener('change',() =>{
     window.location.search = "/";
 })
 
+//Pagination
+
+document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+
+    function goToPage(pageNum) {
+        params.set("page", pageNum);
+        window.location.search = params.toString();
+    }
+
+    document.getElementById("prev-page")?.addEventListener("click", () => {
+        const current = parseInt(document.getElementById("page-input").value, 10);
+        goToPage(current - 1);
+    });
+
+    document.getElementById("next-page")?.addEventListener("click", () => {
+        const current = parseInt(document.getElementById("page-input").value, 10);
+        goToPage(current + 1);
+    });
+
+    document.getElementById("page-form")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const value = parseInt(document.getElementById("page-input").value, 10);
+        const max = parseInt(document.getElementById("page-input").max, 10);
+        const clamped = Math.max(1, Math.min(value, max));
+        goToPage(clamped);
+    });
+});
+
 //Option to update / delete receipts
 
 const receiptsAllRows = document.querySelectorAll('.receipt-row');
@@ -111,7 +140,7 @@ receiptsAllRows.forEach( row =>{
 
 function receiptModifyOption(event){
     event.preventDefault();
-    
+
 }
 
 //Delete receipt function

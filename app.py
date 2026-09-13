@@ -40,11 +40,13 @@ class Receipt(db.Model):
         }
 
 
-def apply_filters_and_sort(query):
+def apply_filters_and_sort(query, default_page = 1, default_per_page = 10):
     status = request.args.getlist("status")
     vendor = request.args.getlist("vendor")
     sort_by = request.args.get("sort")
     order = request.args.get("order", default="asc")
+    page = request.args.get("page", default = default_page, type=int)
+    per_page = request.args.get("per_page", default = default_per_page, type=int)
 
     if status:
         lowered_status = [s.lower() for s in status]
@@ -53,18 +55,43 @@ def apply_filters_and_sort(query):
         lowered_vendors = [v.lower() for v in vendor]
         query = query.filter(db.func.lower(Receipt.vendor).in_(lowered_vendors))
 
-    result = [r.to_dict() for r in query.all()]
 
-    if sort_by and result and sort_by in result[0]:
-        result = sorted(result, key=lambda r: r[sort_by], reverse=(order == "desc"))
+    valid_columns = Receipt.__table__.columns.keys()
+    if sort_by and sort_by in valid_columns:
+        column = getattr(Receipt, sort_by)
+        # push NULLs to the end regardless of sort direction
+        nulls_order = column.is_(None)
+        if order == "desc":
+            query = query.order_by(nulls_order, column.desc())
+        else:
+            query = query.order_by(nulls_order, column.asc())
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+    result = [r.to_dict() for r in pagination.items]
 
-    return result, status, vendor, sort_by, order
+    return result, status, vendor, sort_by, order, pagination
+    # result = [r.to_dict() for r in query.all()]
+
+    # if sort_by and result and sort_by in result[0]:
+    #     result = sorted(result, key=lambda r: r[sort_by], reverse=(order == "desc"))
+
+    # return result, status, vendor, sort_by, order
 
 
 @app.route("/")
 def index():
-    result, status, vendor, sort_by, order = apply_filters_and_sort(Receipt.query)
-    return render_template("app.html", receipts=result, status=status, vendor=vendor, sort_by=sort_by, order=order)
+    result, status, vendor, sort_by, order, pagination = apply_filters_and_sort(Receipt.query, default_page = 1, default_per_page = 10)
+    return render_template(
+        "app.html", 
+        receipts=result, 
+        status=status, 
+        vendor=vendor, 
+        sort_by=sort_by, 
+        order=order, 
+        page=pagination.page, 
+        per_page=pagination.per_page,
+        total=pagination.total,
+        pages=pagination.pages,
+)
 
 
 @app.route("/vendors", methods=["GET"])

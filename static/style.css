@@ -8354,7 +8354,13 @@ td:hover{
     color: white;
 }
 
+.btn-sm{
+  margin: 5px;
+}
 
+.form-control-sm{
+  margin-right: 5px;
+}
 
 html::-webkit-scrollbar {
   width: 5px;

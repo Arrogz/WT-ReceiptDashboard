@@ -65,6 +65,30 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                
+                                <div class="pagination-controls d-flex justify-content-center align-items-center gap-2 mt-3">
+                                    <button id="prev-page" class="btn btn-outline-light btn-sm" {% if page <= 1 %}disabled{% endif %}>
+                                        &laquo; Prev
+                                    </button>
+
+                                    <form id="page-form" class="d-flex align-items-center gap-1 mb-0">
+                                        <input
+                                            type="number"
+                                            id="page-input"
+                                            name="page"
+                                            min="1"
+                                            max="{{ pages }}"
+                                            value="{{ page }}"
+                                            class="form-control form-control-sm text-center"
+                                            style="width: 60px;"
+                                        >
+                                        <span class="text-light">/ {{ pages }}</span>
+                                    </form>
+
+                                    <button id="next-page" class="btn btn-outline-light btn-sm" {% if page >= pages %}disabled{% endif %}>
+                                        Next &raquo;
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
