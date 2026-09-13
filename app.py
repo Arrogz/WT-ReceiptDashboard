@@ -8,7 +8,7 @@ from datetime import date, datetime
 import uuid
 
 app = Flask(__name__)
-CORS(app)  # allows your React dev server (different port) to call this API
+CORS(app)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///receipts.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False

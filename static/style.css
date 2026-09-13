@@ -482,7 +482,8 @@ pre {
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
   margin-right: -15px;
-  margin-left: -15px;}
+  /* margin-left: -15px; */
+}
   
 .no-gutters {
   margin-right: 0;
@@ -8245,7 +8246,19 @@ td:hover{
     display: block;
     flex-wrap: wrap;
     padding: 12px 10px 20px;
-    
+    max-height: 50vh;
+    overflow-y: auto;
+    scrollbar-width: 5px;
+    scrollbar-color: #6366f1 transparent;
+    scrollbar-track: transparent;
+}
+.filter-name{
+    color:white;
+    font-weight: bold;
+}
+
+.clear-checkbox{
+  display: none;
 }
 
 .vendor-filter{
@@ -8346,7 +8359,7 @@ td:hover{
 html::-webkit-scrollbar {
   width: 5px;
   color: #6366f1 transparent;
-  
+  height: 5px;
 }
 
 html::-webkit-scrollbar-track {

@@ -1,3 +1,5 @@
+//Sort by clicking the header
+
 const header = document.getElementById('table_header');
 
 header.addEventListener('click', (e) => {
@@ -17,17 +19,19 @@ header.addEventListener('click', (e) => {
   window.location.href = url.toString();
 });
 
+//Load Vendor Filter Bar
+
 async function loadVendorFilters() {
-    const response = await fetch('/vendors');
+    const response = await fetch('/vendors'); //GET json only filled with unique Vendor.
     const vendors = await response.json();
 
     const params = new URLSearchParams(window.location.search);
     const selectedVendors = params.getAll('vendor');
 
     const filterBar = document.getElementById('vendor-filter-bar');
-    filterBar.innerHTML = '';
+    filterBar.innerHTML = '<p class = "filter-name">Vendor</p>';
 
-    vendors.forEach(vendor => {
+    vendors.forEach(vendor => { //Create a checkbox for each vendor.
         const label = document.createElement('label');
         label.className = 'vendor-filter';
 
@@ -45,7 +49,7 @@ async function loadVendorFilters() {
     });
 }
 
-function updateVendorFilter() {
+function updateVendorFilter() { //Reload page to apply the filter
     const params = new URLSearchParams(window.location.search);
     params.delete('vendor');
 
@@ -57,6 +61,8 @@ function updateVendorFilter() {
 }
 
 loadVendorFilters();
+
+//Filter by status
 
 const statuscheckboxes = document.querySelectorAll('.status-checkbox');
 
@@ -74,7 +80,7 @@ function updateStatusCheckbox(){
     window.location.search = params.toString();
 }
 
-function rememberStatusCheckbox(){
+function rememberStatusCheckbox(){ //Remember filter option when reload the page
     const params = new URLSearchParams(window.location.search);
     const allStatus = params.getAll('status');
     for(curStatus of allStatus){
@@ -87,6 +93,16 @@ function rememberStatusCheckbox(){
 }
 
 rememberStatusCheckbox()
+
+//Clear Filter Btn
+
+const clearbtn = document.getElementById('clear-btn')
+
+clearbtn.addEventListener('change',() =>{
+    window.location.search = "/";
+})
+
+//Option to update / delete receipts
 
 const deleteButtons = document.querySelectorAll('.receipt-status')
 
