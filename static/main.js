@@ -67,7 +67,7 @@ loadVendorFilters();
 const statuscheckboxes = document.querySelectorAll('.status-checkbox');
 
 statuscheckboxes.forEach(checkbox =>{
-    checkbox.addEventListener('change', updateStatusCheckbox)
+    checkbox.addEventListener('change', updateStatusCheckbox);
 })
 
 function updateStatusCheckbox(){
@@ -92,11 +92,11 @@ function rememberStatusCheckbox(){ //Remember filter option when reload the page
     }
 }
 
-rememberStatusCheckbox()
+rememberStatusCheckbox();
 
 //Clear Filter Btn
 
-const clearbtn = document.getElementById('clear-btn')
+const clearbtn = document.getElementById('clear-btn');
 
 clearbtn.addEventListener('change',() =>{
     window.location.search = "/";
@@ -104,7 +104,18 @@ clearbtn.addEventListener('change',() =>{
 
 //Option to update / delete receipts
 
-const deleteButtons = document.querySelectorAll('.receipt-status')
+const receiptsAllRows = document.querySelectorAll('.receipt-row');
+receiptsAllRows.forEach( row =>{
+    row.addEventListener('contextmenu', receiptModifyOption);
+})
+
+function receiptModifyOption(event){
+    event.preventDefault();
+    
+}
+
+//Delete receipt function
+const deleteButtons = document.querySelectorAll('.receipt-status');
 
 deleteButtons.forEach(td => {
     td.addEventListener('click', (e) => {

@@ -8323,16 +8323,16 @@ td:hover{
 }
 
 
-.status-filter-flagged:hover{
+.status-filter-flaggedpending:hover{
     border-color: white;
     color: #ffffff;
 }
 
-.status-checkbox-flagged{
+.status-checkbox-flaggedpending{
     display: none
 }
 
-.status-filter-flagged:has(.status-checkbox-flagged:checked){
+.status-filter-flaggedpending:has(.status-checkbox-flaggedpending:checked){
     background-color: white;
     border-color: white;
     color: black;

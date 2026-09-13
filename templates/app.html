@@ -27,8 +27,12 @@
                                 <label class="status-filter status-filter-approved">
                                     <input type="checkbox" class = "status-checkbox status-checkbox-approved" value = "Approved">Approved</input>
                                 </label>
-                                <label class="status-filter status-filter-flagged">
-                                    <input type="checkbox" class = "status-checkbox status-checkbox-flagged" value = "Flagged">Flagged</input>
+                                <label class="status-filter status-filter-flaggedpending">
+                                    <input type="checkbox" class = "status-checkbox status-checkbox-flaggedpending" value = "Flagged">Flagged</input>
+                                </label>
+                                
+                                <label class="status-filter status-filter-flaggedpending">
+                                    <input type="checkbox" class = "status-checkbox status-checkbox-flaggedpending" value = "Pending">Pending</input>
                                 </label>
                                 <label class="status-filter status-filter-rejected">
                                     <input type="checkbox" class = "status-checkbox status-checkbox-rejected" value = "Rejected">Rejected</input>
@@ -50,7 +54,7 @@
                                         </thead>
                                         <tbody>
                                             {% for r in receipts %}
-                                            <tr>
+                                            <tr class = "receipt-row">
                                                 <td>{{ r.vendor }}</td>
                                                 <td>${{ "%.2f"|format(r.amount) }}</td>
                                                 <td>{{ r.record_date }}</td>

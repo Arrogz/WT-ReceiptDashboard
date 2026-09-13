@@ -1,31 +1,32 @@
 from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import UUID, Column
-from werkzeug.exceptions import InternalServerError, abort
+from sqlalchemy import UUID, Column, func
 from data import receipts
 from datetime import date, datetime
 import uuid
+from enum import Enum
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
+#CORS(app, resources={r"/*": {"origins": "https://yourfrontend.com"}})
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///receipts.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
-app.config['DEBUG'] = False 
-
-@app.errorhandler(InternalServerError)
-def handle_error(error):
-    return "<h1>403 Forbidden</h1><p>You do not have access to this page.</p>"
+class ReceiptStatus(Enum):
+    PENDING = "Pending"
+    FLAGGED = "Flagged"
+    APPROVED = "Approved"
+    REJECTED = "Rejected"
 
 class Receipt(db.Model):
     id = Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
     vendor = db.Column(db.String, nullable=False)
     amount = db.Column(db.Float, nullable=False)
-    status = db.Column(db.String, nullable=False, default="Pending")
-    record_date = db.Column(db.Date, nullable=True, default=date.today)
+    status = db.Column(db.String, nullable=False, default=ReceiptStatus.PENDING.value)
+    record_date = db.Column(db.Date, nullable=False, default=date.today)
     confidence = db.Column(db.Float, nullable=True)
 
     def to_dict(self):
@@ -37,7 +38,8 @@ class Receipt(db.Model):
             "confidence": self.confidence,
             "record_date": self.record_date,
         }
-        
+
+
 def apply_filters_and_sort(query):
     status = request.args.getlist("status")
     vendor = request.args.getlist("vendor")
@@ -87,7 +89,7 @@ def create_receipt():
     receipt = Receipt(
         vendor=data.get("vendor"),
         amount=data.get("amount"),
-        status=data.get("status", "Pending"),
+        status=data.get("status", ReceiptStatus.PENDING.value),
         record_date= datetime.strptime(data.get("record_date"), "%Y-%m-%d").date() if data.get("record_date") else None,
         confidence=data.get("confidence"),
     )
@@ -98,7 +100,7 @@ def create_receipt():
 @app.route("/receipts/<receipt_id>", methods=["PATCH"])
 def update_status(receipt_id):
     new_status = request.get_json().get("status")
-    receipt = Receipt.query.get(receipt_id)
+    receipt = db.session.get(Receipt, receipt_id)
 
     if not receipt:
         return jsonify({"error": "Receipt not found"}), 404
@@ -109,7 +111,7 @@ def update_status(receipt_id):
 
 @app.route("/receipts/<receipt_id>", methods=["DELETE"])
 def delete_receipt(receipt_id):
-    receipt = Receipt.query.get(receipt_id)
+    receipt = db.session.get(Receipt, receipt_id)
 
     if not receipt:
         return jsonify({"error": "Receipt not found"}), 404
@@ -119,19 +121,19 @@ def delete_receipt(receipt_id):
     return "", 204
 
 
-with app.app_context():
-    db.create_all()
+# with app.app_context():
+#     db.create_all()
 
-    if Receipt.query.count() == 0:
-        for r in receipts:
-            db.session.add(Receipt(
-                vendor=r.get("vendor"),
-                amount=r.get("amount"),
-                status=r.get("status", "Pending"),
-                record_date = datetime.strptime(r.get("record_date"), '%Y-%m-%d').date(),
-                confidence=r.get("confidence"),
-            ))
-        db.session.commit()
+#     if db.session.scalar(db.select(func.count()).select_from(Receipt)) == 0:
+#         for r in receipts:
+#             db.session.add(Receipt(
+#                 vendor=r.get("vendor"),
+#                 amount=r.get("amount"),
+#                 status=r.get("status", "Pending"),
+#                 record_date = datetime.strptime(r.get("record_date"), '%Y-%m-%d').date(),
+#                 confidence=r.get("confidence"),
+#             ))
+#         db.session.commit()
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
