@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, redirect, url_for
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import UUID, Column, func
@@ -69,16 +69,14 @@ def apply_filters_and_sort(query, default_page = 1, default_per_page = 10):
     result = [r.to_dict() for r in pagination.items]
 
     return result, status, vendor, sort_by, order, pagination
-    # result = [r.to_dict() for r in query.all()]
-
-    # if sort_by and result and sort_by in result[0]:
-    #     result = sorted(result, key=lambda r: r[sort_by], reverse=(order == "desc"))
-
-    # return result, status, vendor, sort_by, order
 
 
-@app.route("/")
+@app.route('/')
 def index():
+    return redirect(url_for('home'))
+
+@app.route("/home")
+def home():
     result, status, vendor, sort_by, order, pagination = apply_filters_and_sort(Receipt.query, default_page = 1, default_per_page = 10)
     return render_template(
         "app.html", 
