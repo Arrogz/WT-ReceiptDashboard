@@ -1,7 +1,8 @@
 # Receipts Review App
 
 A small internal tool for reviewing, filtering, sorting, and triaging scanned receipts (approve / flag / reject), with a summary chart of receipt statuses.
-
+![Summarize  chart](img/chart.png)
+![Receipt table with sorting, filter functions](img/receipt_table.png)
 ## Technologies Used
 
 **Backend**
