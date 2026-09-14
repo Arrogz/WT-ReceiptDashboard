@@ -178,9 +178,8 @@ const statusSelect = document.getElementById('status-select');
 const confirmPatchBtn = document.getElementById('confirm-patch-btn');
 
 document.getElementById('patch-option').addEventListener('click', (e) => {
-    e.stopPropagation(); // don't let the document click handler close things prematurely
+    e.stopPropagation(); 
 
-    // position it near where the context menu was
     patchModal.style.top = contextMenu.style.top;
     patchModal.style.left = contextMenu.style.left;
     patchModal.style.display = 'block';
@@ -243,12 +242,10 @@ async function deleteReceipt(receiptId) {
             method: 'DELETE',
         });
         if (response.ok) {
-            // Remove the row from the table
             const row = document.querySelector(`[data-receipt-id="${receiptId}"]`);
             if (row) {
                 row.remove();
             }
-            //window.location.reload();
         }
     } catch (error) {
         console.error('Error deleting receipt:', error);

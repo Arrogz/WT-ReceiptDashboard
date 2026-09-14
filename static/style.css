@@ -8434,7 +8434,7 @@ html::-webkit-scrollbar-track {
 } 
 
 html::-webkit-scrollbar-thumb {
-  background: #6366f1; /* Color of the scrollbar handle */
-  border-radius: 10px; /* Makes it perfectly rounded */
+  background: #6366f1;
+  border-radius: 10px; 
   border: 2px solid #6366f1;
 }
