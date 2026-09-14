@@ -2,7 +2,9 @@
 
 A small internal tool for reviewing, filtering, sorting, and triaging scanned receipts (approve / flag / reject), with a summary chart of receipt statuses.
 ![Summarize  chart](img/chart.png)
+Summarize  chart
 ![Receipt table with sorting, filter functions](img/receipt_table.png)
+Receipt table with sorting, filter functions
 ## Technologies Used
 
 **Backend**
@@ -103,3 +105,19 @@ A small internal tool for reviewing, filtering, sorting, and triaging scanned re
    (redirects to `/home`)
 
 The app binds to `127.0.0.1` by default (not `0.0.0.0`), so it's only reachable from the machine it's running on.
+
+## Functions
+1. **Filter**
+    On the right side is the filter bar, allowing the user to filter the receipt list by Vendor and Status. Multiple checkbox can be selected at the same time.
+    ![Filter by Vendor](img/filter_by_vendor.png)
+    Filter by Vendor
+    ![Filter by Vendor and Status](img/filter_by_vendor_and_status.png)
+    Filter by Vendor and Status
+
+    
+2. **Sort**
+    The receipt list will be sorted according to the chosen criteria when you click on an attribute in the table header. Selecting the attribute again to switch between asc and desc sorting.
+    ![Hovering over an attribute (Status)](img/hover_over_table_head.png)
+    Hovering over an attribute (Status)
+    ![List sorted by date](img/filter_by_vendor_and_status.png)
+    List sorted by date. The selected criteria can be seen with underline.
