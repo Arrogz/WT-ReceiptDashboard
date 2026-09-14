@@ -31,6 +31,7 @@ A small internal tool for reviewing, filtering, sorting, and triaging scanned re
 **Backend (`app.py`)**
 - Single `Receipt` model: `id`, `vendor`, `amount`, `status`, `record_date`, `confidence`.
 - `apply_filters_and_sort()` is the shared query builder used by both the page route (`/home`) and the JSON API (`/receipts`) — it reads `status`, `vendor`, `sort`, `order`, `page`, and `per_page` from the query string, applies filters/sorting, and paginates.
+
 - Routes:
   | Route | Method | Purpose |
   |---|---|---|
@@ -44,17 +45,22 @@ A small internal tool for reviewing, filtering, sorting, and triaging scanned re
 
 **Frontend (`static/main.js`)**
 - Wrapped in a single IIFE (`(function () { 'use strict'; ... })();`) so none of its variables or helper functions leak into the global scope.
+
 - Handles, in one file: column sorting (via URL query params), vendor/status filter checkboxes, pagination controls, a right-click context menu for approving/rejecting/deleting a receipt, restoring scroll position across page reloads, and drawing the Chart.js summary bar chart.
-- State (current filters, sort, page) is kept entirely in the URL query string rather than in JS memory — every filter/sort/page action reloads the page with updated query params. This keeps state shareable/bookmarkable and avoids needing a frontend framework, at the cost of a full page reload per interaction.
+
+- State (current filters, sort, page) is kept entirely in the URL query string — every filter/sort/page action reloads the page with updated query params. This keeps state shareable/bookmarkable and avoids needing a frontend framework.
 
 ## Important Decisions
 
 - **No frontend framework / build step.** Given the app's small surface area (one table, one chart, a few controls), plain JS + server-rendered templates were simpler to reason about and deploy than introducing a bundler.
+
 - **URL query params as the single source of truth for table state.** Sort column/order, filters, and page number all live in the URL rather than client-side state. This means the "current view" is always a shareable link and survives a refresh with no extra code.
+
 - **Input validation on write endpoints (`POST`/`PATCH`).** `amount` is explicitly coerced to `float` (accepting both numbers and numeric strings) rather than trusted as-is, `status` is checked against the `ReceiptStatus` enum, and `record_date` is parsed with a caught `ValueError`, so malformed input returns a `400` with a clear message instead of an uncaught `500`.
-- **Page number clamping.** Invalid (`?page=abc`) or out-of-range (`?page=999`) page values are clamped to a valid page server-side rather than erroring or silently returning an empty result set.
-- **No authentication, and CORS is wide open (`origins: "*"`).** This app is intended to be run locally (`127.0.0.1`) for a demo/review, not deployed publicly. If it's ever hosted somewhere reachable by others, auth should be added and CORS should be restricted to a specific origin before that happens.
-- **`debug=True` in `app.run()`.** Intentionally left on for local development — gives auto-reload and readable tracebacks. Should be turned off (or gated behind an environment variable) before any non-local deployment, since Flask's debug mode exposes a console that allows arbitrary code execution to anyone who can reach the port.
+
+- **No authentication, and CORS is wide open (`origins: "*"`).** This app is intended to be run locally (`127.0.0.1`) for a demo/review, not deployed publicly.
+
+- **`debug=True` in `app.run()`.** Intentionally left on for local development and convinient testing.
 
 ## Running the Application
 
@@ -82,7 +88,7 @@ A small internal tool for reviewing, filtering, sorting, and triaging scanned re
                ))
            db.session.commit()
    ```
-   You can comment it back out after the first successful run — `receipts.db` will persist between runs.
+   You can comment it back out after the first successful run — `receipts.db` will persist between runs. However, you can also use the test receipts.db uploaded on Git (This is intentional, didn't the db into .gitignore for easier testing)
 
 3. **Run the app:**
    ```bash
