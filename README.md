@@ -56,7 +56,7 @@ A small internal tool for reviewing, filtering, sorting, and triaging scanned re
 
 - **URL query params as the single source of truth for table state.** Sort column/order, filters, and page number all live in the URL rather than client-side state. This means the "current view" is always a shareable link and survives a refresh with no extra code.
 
-- **Input validation on write endpoints (`POST`/`PATCH`).** `amount` is explicitly coerced to `float` (accepting both numbers and numeric strings) rather than trusted as-is, `status` is checked against the `ReceiptStatus` enum, and `record_date` is parsed with a caught `ValueError`, so malformed input returns a `400` with a clear message instead of an uncaught `500`.
+- **Input validation on write endpoints (`POST`/`PATCH`).** `amount` is explicitly coerced to `float` (accepting both numbers and numeric strings), `status` is checked against the `ReceiptStatus` enum, and `record_date` is parsed with a caught `ValueError`, so malformed input returns a `400` with a clear message instead of an uncaught `500`.
 
 - **No authentication, and CORS is wide open (`origins: "*"`).** This app is intended to be run locally (`127.0.0.1`) for a demo/review, not deployed publicly.
 
