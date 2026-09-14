@@ -26,36 +26,41 @@
     //Load Vendor Filter Bar
 
     async function loadVendorFilters() {
-        const response = await fetch('/vendors'); //GET json only filled with unique Vendor.
-        const vendors = await response.json();
-
-        const params = getParams();
-        const selectedVendors = params.getAll('vendor');
 
         const filterBar = document.getElementById('vendor-filter-bar');
-        filterBar.innerHTML = '<p class = "filter-name">Vendor</p>';
+        
+        try{
+            
+            const response = await fetch('/vendors'); //GET json only filled with unique Vendor.
+            const vendors = await response.json();
 
-        vendors.forEach(vendor => { //Create a checkbox for each vendor.
-            const label = document.createElement('label');
-            label.className = 'vendor-filter';
+            const params = getParams();
+            const selectedVendors = params.getAll('vendor');
+            filterBar.innerHTML = '<p class = "filter-name">Vendor</p>';
 
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.className = 'vendor-checkbox';
-            checkbox.value = vendor;
-            checkbox.checked = selectedVendors.includes(vendor);
+            vendors.forEach(vendor => { //Create a checkbox for each vendor.
+                const label = document.createElement('label');
+                label.className = 'vendor-filter';
 
-            checkbox.addEventListener('change', updateVendorFilter);
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'vendor-checkbox';
+                checkbox.value = vendor;
+                checkbox.checked = selectedVendors.includes(vendor);
 
-            label.appendChild(checkbox);
-            label.append(' ' + vendor);
-            filterBar.appendChild(label);
-        });
+                checkbox.addEventListener('change', updateVendorFilter);
+
+                label.appendChild(checkbox);
+                label.append(' ' + vendor);
+                filterBar.appendChild(label);
+            });
+        } catch (err) {
+            console.error('Failed to load vendor filters:', err);
+            filterBar.innerHTML = '<p class="filter-name">Vendor</p><p class="filter-error">Couldn\'t load vendors.</p>';
+        } 
     }
 
-    loadVendorFilters().then(() => {
-        document.body.style.visibility = 'visible';
-    });
+    
 
     function updateVendorFilter() { //Reload page to apply the filter
         const params = getParams();
@@ -67,6 +72,10 @@
 
         window.location.search = params.toString();
     }
+
+    loadVendorFilters().then(() => {
+        document.body.style.visibility = 'visible';
+    });
 
     loadVendorFilters();
 
@@ -273,35 +282,42 @@
 
     //Draw Summrize chart
 
-    fetch('/receipts/summary').then(res => res.json()).then(data => {
-        const ctx = document.getElementById('receiptsSummaryChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Total', 'Approved', 'Flagged', 'Pending', 'Rejected'],
-                datasets: [{
-                    label: 'Receipts',
-                    data: [data.total, data.approved, data.flagged, data.pending, data.rejected],
-                    backgroundColor: [
-                        '#ffcc00',   
-                        '#7aff75',   
-                        '#a0a0a0',   
-                        '#a0a0a0',   
-                        '#ff4d4d'    
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    title: { display: true, text: 'Receipts Summary', color: 'white'}
-                },
-                scales: {
-                    x: { ticks: {color: 'white'}},
-                    y: { beginAtZero: true, ticks: { stepSize: 1, color: 'white' }}
-                }
+    fetch('/receipts/summary').
+        then(res=>{
+            if(!res.ok){
+                throw new Error(`Server returned ${res.status}`);
             }
+            return res.json();
+        })
+        .then(data => {
+            const ctx = document.getElementById('receiptsSummaryChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Total', 'Approved', 'Flagged', 'Pending', 'Rejected'],
+                    datasets: [{
+                        label: 'Receipts',
+                        data: [data.total, data.approved, data.flagged, data.pending, data.rejected],
+                        backgroundColor: [
+                            '#ffcc00',   
+                            '#7aff75',   
+                            '#a0a0a0',   
+                            '#a0a0a0',   
+                            '#ff4d4d'    
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Receipts Summary', color: 'white'}
+                    },
+                    scales: {
+                        x: { ticks: {color: 'white'}},
+                        y: { beginAtZero: true, ticks: { stepSize: 1, color: 'white' }}
+                    }
+                }
+            });
         });
-    });
 })();
