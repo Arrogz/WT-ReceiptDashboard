@@ -150,6 +150,19 @@ def delete_receipt(receipt_id):
     db.session.commit()
     return "", 204
 
+@app.route("/receipts/summary")
+def receipts_summary():
+    total = Receipt.query.count()
+    approved = Receipt.query.filter_by(status=ReceiptStatus.APPROVED.value).count()
+    flaggedpending = Receipt.query.filter_by(status=ReceiptStatus.FLAGGED.value).count() + Receipt.query.filter_by(status=ReceiptStatus.PENDING.value).count()
+    rejected = Receipt.query.filter_by(status=ReceiptStatus.REJECTED.value).count()
+
+    return jsonify({
+        "total": total,
+        "approved": approved,
+        "flaggedpending": flaggedpending,
+        "rejected": rejected
+    })
 
 # with app.app_context():
 #     db.create_all()

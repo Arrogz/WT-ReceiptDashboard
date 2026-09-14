@@ -8416,6 +8416,13 @@ td:hover{
     cursor: pointer;
 }
 
+.sumchart{
+  color: white; 
+  max-width: 70vw;
+  max-height: 50vh;
+  margin-bottom: 15px;
+}
+
 html::-webkit-scrollbar {
   width: 5px;
   color: #6366f1 transparent;

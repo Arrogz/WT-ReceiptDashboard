@@ -254,3 +254,56 @@ async function deleteReceipt(receiptId) {
         console.error('Error deleting receipt:', error);
     }
 }
+
+//Remember scroll position
+
+document.addEventListener("DOMContentLoaded", () => {
+    const scrollPosition = sessionStorage.getItem("pageScrollPosition");
+    const maxPageScroll = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    console.log(maxPageScroll);
+    console.log(scrollPosition);
+    if (scrollPosition) {
+      if(scrollPosition > maxPageScroll) console.log("HIGHER");
+      window.scrollTo(0, parseInt(scrollPosition, 10));
+      sessionStorage.removeItem("pageScrollPosition"); 
+    }
+    console.log(window.scrollY);
+  });
+  window.addEventListener("beforeunload", () => {
+    sessionStorage.setItem("pageScrollPosition", window.scrollY);
+  });
+
+
+
+fetch('/receipts/summary')
+.then(res => res.json())
+.then(data => {
+    const ctx = document.getElementById('receiptsSummaryChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Total', 'Approved', 'Flagged', 'Rejected'],
+            datasets: [{
+                label: 'Receipts',
+                data: [data.total, data.approved, data.flaggedpending, data.rejected],
+                backgroundColor: [
+                    '#ffcc00',   
+                    '#7aff75',   
+                    '#a0a0a0',   
+                    '#ff4d4d'    
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: { display: true, text: 'Receipts Summary', color: 'white'}
+            },
+            scales: {
+                x: { ticks: {color: 'white'}},
+                y: { beginAtZero: true, ticks: { stepSize: 1, color: 'white' }}
+            }
+        }
+    });
+});
