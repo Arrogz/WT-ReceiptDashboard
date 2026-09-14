@@ -118,7 +118,7 @@ The app binds to `127.0.0.1` by default (not `0.0.0.0`), so it's only reachable 
     The receipt list will be sorted according to the chosen criteria when you click on an attribute in the table header. Selecting the attribute again to switch between asc and desc sorting.
     ![Hovering over an attribute (Status)](img/hover_over_table_head.png)
     Hovering over an attribute (Status).
-    ![List sorted by date](img/filter_by_vendor_and_status.png)
+    ![List sorted by date](img/list_sorted_by_date.png)
     List sorted by date. The selected criteria can be seen with underline.
 
 3. **Updating/Deleting Receipt**
