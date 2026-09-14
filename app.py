@@ -37,8 +37,8 @@ class Receipt(db.Model):
             "vendor": self.vendor,
             "amount": self.amount,
             "status": self.status,
-            "confidence": self.confidence,
             "record_date": self.record_date,
+            "confidence": self.confidence,
         }
 
 
