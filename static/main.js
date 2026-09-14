@@ -316,7 +316,7 @@
                     },
                     scales: {
                         x: { ticks: {color: 'white'}},
-                        y: { beginAtZero: true, ticks: { stepSize: 1, color: 'white' }}
+                        y: { beginAtZero: true, ticks: { stepSize: 2, color: 'white' }}
                     }
                 }
             });
