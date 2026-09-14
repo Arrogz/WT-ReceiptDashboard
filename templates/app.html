@@ -54,7 +54,7 @@
                                         </thead>
                                         <tbody>
                                             {% for r in receipts %}
-                                            <tr class = "receipt-row">
+                                            <tr class = "receipt-row" data-receipt-id="{{ r.id }}">
                                                 <td>{{ r.vendor }}</td>
                                                 <td>${{ "%.2f"|format(r.amount) }}</td>
                                                 <td>{{ r.record_date }}</td>
@@ -65,7 +65,18 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                
+                                <div id="receipt-context-menu" class="context-menu">
+                                    <div id="patch-option" class="context-menu-item">Patch</div>
+                                    <div id="delete-option" class="context-menu-item">Delete</div>
+                                </div>
+                                <div id="patch-modal" class="patch-modal">
+                                    <label for="status-select">Set status:</label>
+                                    <select id="status-select">
+                                        <option value="Approved">Approved</option>
+                                        <option value="Rejected">Rejected</option>
+                                    </select>
+                                    <button id="confirm-patch-btn">Confirm</button>
+                                </div>
                                 <div class="pagination-controls d-flex justify-content-center align-items-center gap-2 mt-3">
                                     <button id="prev-page" class="btn btn-outline-light btn-sm" {% if page <= 1 %}disabled{% endif %}>
                                         &laquo; Prev

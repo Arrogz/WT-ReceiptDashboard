@@ -1,5 +1,3 @@
-//Sort by clicking the header
-
 const header = document.getElementById('table_header');
 
 header.addEventListener('click', (e) => {
@@ -143,16 +141,101 @@ function receiptModifyOption(event){
 
 }
 
-//Delete receipt function
-const deleteButtons = document.querySelectorAll('.receipt-status');
+//Receipt Context Menu to choose between PATCH or DELETE
 
-deleteButtons.forEach(td => {
-    td.addEventListener('click', (e) => {
-        const receiptId = e.target.closest('tr').dataset.receiptId;
-        console.log(receiptId);
-        //deleteReceipt(receiptId);
+const receiptsOptionbtn = document.querySelectorAll('.receipt-row');
+const contextMenu = document.getElementById('receipt-context-menu');
+
+receiptsOptionbtn.forEach(tr => {
+    tr.addEventListener('contextmenu', (e) => {
+        e.preventDefault(); 
+
+        activeReceiptId = e.currentTarget.dataset.receiptId;
+
+        contextMenu.style.top = `${e.clientY}px`;
+        contextMenu.style.left = `${e.clientX}px`;
+        contextMenu.style.display = 'block';
     });
 });
+
+document.addEventListener('click', (e) => {
+    contextMenu.style.display = 'none';
+    if (!patchModal.contains(e.target)) {
+        patchModal.style.display = 'none';
+    }
+});
+
+document.getElementById('delete-option').addEventListener('click', () => {
+    deleteReceipt(activeReceiptId);
+    contextMenu.style.display = 'none';
+});
+
+
+//Patch Option Popup
+
+const patchModal = document.getElementById('patch-modal');
+const statusSelect = document.getElementById('status-select');
+const confirmPatchBtn = document.getElementById('confirm-patch-btn');
+
+document.getElementById('patch-option').addEventListener('click', (e) => {
+    e.stopPropagation(); // don't let the document click handler close things prematurely
+
+    // position it near where the context menu was
+    patchModal.style.top = contextMenu.style.top;
+    patchModal.style.left = contextMenu.style.left;
+    patchModal.style.display = 'block';
+
+    contextMenu.style.display = 'none';
+});
+
+confirmPatchBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+
+    const newStatus = statusSelect.value;
+    patchReceipt(activeReceiptId, newStatus);
+
+    patchModal.style.display = 'none';
+});
+
+function patchReceipt(id, status) {
+    console.log('Patch', id, 'to status:', status);
+    fetch(`/receipts/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+    })
+    .then(res => {
+        if (!res.ok) {
+            return res.json().then(err => { throw new Error(err.error || 'Patch failed'); });
+        }
+        return res.json();
+    })
+    .then(updatedReceipt => {
+        updateRowUI(id, updatedReceipt.status);
+    })
+    .catch(err => {
+        console.error('Failed to patch receipt:', err);
+        alert(`Error: ${err.message}`);
+    });
+}
+
+function updateRowUI(id, status) {
+    const row = document.querySelector(`.receipt-row[data-receipt-id="${id}"]`);
+    if (!row) return;
+
+    const statusCell = row.querySelector('.receipt-status');
+    statusCell.innerHTML = `<strong>${status}</strong>`;
+
+    if (status === 'Approved') {
+        statusCell.style.color = '#7aff75';
+    } else if (status === 'Rejected') {
+        statusCell.style.color = 'red';
+    } else {
+        statusCell.style.color = '';
+    }
+}
+
+//
 
 async function deleteReceipt(receiptId) {
     try{
@@ -165,7 +248,7 @@ async function deleteReceipt(receiptId) {
             if (row) {
                 row.remove();
             }
-            window.location.reload();
+            //window.location.reload();
         }
     } catch (error) {
         console.error('Error deleting receipt:', error);
