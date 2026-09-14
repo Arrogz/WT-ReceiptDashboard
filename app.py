@@ -15,6 +15,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///receipts.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
+def clamp(value, min_val, max_val):
+    return max(min_val, min(value, max_val))
 class ReceiptStatus(Enum):
     PENDING = "Pending"
     FLAGGED = "Flagged"
@@ -38,6 +40,7 @@ class Receipt(db.Model):
             "confidence": self.confidence,
             "record_date": self.record_date,
         }
+
 
 
 def apply_filters_and_sort(query, default_page = 1, default_per_page = 10):
@@ -77,7 +80,7 @@ def index():
 
 @app.route("/home")
 def home():
-    result, status, vendor, sort_by, order, pagination = apply_filters_and_sort(Receipt.query, default_page = 1, default_per_page = 10)
+    result, status, vendor, sort_by, order, pagination = apply_filters_and_sort(Receipt.query, default_page = 1, default_per_page = 10) 
     return render_template(
         "app.html", 
         receipts=result, 
@@ -111,16 +114,40 @@ def get_receipts():
 
 @app.route("/receipts/", methods=["POST"])
 def create_receipt():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     if not isinstance(data, dict):
-        app.logger.info(type(data))
         return jsonify({"error": "Request body must be a JSON object"}), 400
     
+    vendor = data.get("vendor")
+    if not vendor:
+        return jsonify({"error": "'vendor' is required"}), 400
+
+    raw_amount = data.get("amount")
+    if raw_amount is None:
+        return jsonify({"error": "'amount' is required"}), 400
+    try:
+        amount = float(raw_amount)
+    except (TypeError, ValueError):
+        return jsonify({"error": "'amount' must be a number"}), 400
+    
+    status = data.get("status", ReceiptStatus.PENDING.value)
+    valid_statuses = {s.value for s in ReceiptStatus}
+    
+    if status not in valid_statuses:
+        return jsonify({"error": f"Invalid status. Must be one of {sorted(valid_statuses)}"}), 400
+
+    record_date = None
+    if data.get("record_date"):
+        try:
+            record_date = datetime.strptime(data["record_date"], "%Y-%m-%d").date()
+        except ValueError:
+            return jsonify({"error": "record_date must be in YYYY-MM-DD format"}), 400
+    
     receipt = Receipt(
-        vendor=data.get("vendor"),
-        amount=data.get("amount"),
-        status=data.get("status", ReceiptStatus.PENDING.value),
-        record_date= datetime.strptime(data.get("record_date"), "%Y-%m-%d").date() if data.get("record_date") else None,
+        vendor=vendor,
+        amount=amount,
+        status=status,
+        record_date=record_date,
         confidence=data.get("confidence"),
     )
     db.session.add(receipt)
@@ -129,9 +156,16 @@ def create_receipt():
 
 @app.route("/receipts/<receipt_id>", methods=["PATCH"])
 def update_status(receipt_id):
-    new_status = request.get_json().get("status")
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict) or "status" not in data:
+        return jsonify({"error": "Request body must include 'status'"}), 400
+    
+    new_status = data["status"]
+    valid_statuses = {s.value for s in ReceiptStatus}
+    if new_status not in valid_statuses:
+        return jsonify({"error": f"Invalid status. Must be one of {sorted(valid_statuses)}"}), 400
+    
     receipt = db.session.get(Receipt, receipt_id)
-
     if not receipt:
         return jsonify({"error": "Receipt not found"}), 404
 

@@ -4,23 +4,25 @@
         return new URLSearchParams(window.location.search);
     }
 
+    let activeReceiptId = null; 
+    
     const header = document.getElementById('table_header');
 
     header.addEventListener('click', (e) => {
-    const th = e.target.closest('th');
-    if (!th || !th.id.startsWith('table_')) return;
+        const th = e.target.closest('th');
+        if (!th || !th.id.startsWith('table_')) return;
 
-    const sortKey = th.id.replace('table_', '');
-    const params = new URL(window.location.href);
-    const currentSort = params.searchParams.get('sort');
-    const currentOrder = params.searchParams.get('order');
+        const sortKey = th.id.replace('table_', '');
+        const url = new URL(window.location.href);
+        const currentSort = url.searchParams.get('sort');
+        const currentOrder = url.searchParams.get('order');
 
-    const newOrder = (currentSort === sortKey && currentOrder === 'asc') ? 'desc' : 'asc';
+        const newOrder = (currentSort === sortKey && currentOrder === 'asc') ? 'desc' : 'asc';
 
-    params.searchParams.set('sort', sortKey);
-    params.searchParams.set('order', newOrder);
+        url.searchParams.set('sort', sortKey);
+        url.searchParams.set('order', newOrder);
 
-    window.location.search = params.toString();
+        window.location.search = url.searchParams.toString();
     });
 
     //Load Vendor Filter Bar
@@ -116,7 +118,7 @@
     const clearcheckbox = document.getElementById('clear-btn');
 
     clearcheckbox.addEventListener('change',() =>{
-        window.location.search = "/home";
+        window.location.search = "/";
     })
 
     //Pagination
@@ -157,7 +159,7 @@
         tr.addEventListener('contextmenu', (e) => {
             e.preventDefault(); 
 
-            let activeReceiptId = e.currentTarget.dataset.receiptId;
+            activeReceiptId = e.currentTarget.dataset.receiptId;
 
             contextMenu.style.top = `${e.clientY}px`;
             contextMenu.style.left = `${e.clientX}px`;
@@ -267,8 +269,7 @@
         if (scrollPercent !== null) {
             const targetScroll = parseFloat(scrollPercent) * maxPageScroll;
             window.scrollTo(0, targetScroll);
-            sessionStorage.removeItem("pageScrollPercent");
-            console.log(targetScroll);
+            sessionStorage.removeItem("pageScrollPercent"); 
         }
     });
 
