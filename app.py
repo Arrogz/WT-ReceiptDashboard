@@ -200,6 +200,8 @@ def receipts_summary():
         "rejected": rejected
     })
 
+#for database initializing
+
 # with app.app_context():
 #     db.create_all()
 
