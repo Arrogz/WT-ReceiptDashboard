@@ -197,7 +197,6 @@ confirmPatchBtn.addEventListener('click', (e) => {
 });
 
 function patchReceipt(id, status) {
-    console.log('Patch', id, 'to status:', status);
     fetch(`/receipts/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -254,27 +253,31 @@ async function deleteReceipt(receiptId) {
 
 //Remember scroll position
 
-document.addEventListener("DOMContentLoaded", () => {
-    const scrollPosition = sessionStorage.getItem("pageScrollPosition");
+window.addEventListener("load", () => {
+    const scrollPercent = sessionStorage.getItem("pageScrollPercent");
     const maxPageScroll = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    console.log(maxPageScroll);
-    console.log(scrollPosition);
-    if (scrollPosition) {
-      if(scrollPosition > maxPageScroll) console.log("HIGHER");
-      window.scrollTo(0, parseInt(scrollPosition, 10));
-      sessionStorage.removeItem("pageScrollPosition"); 
+
+    console.log(scrollPercent);
+
+    if (scrollPercent !== null) {
+        const targetScroll = parseFloat(scrollPercent) * maxPageScroll;
+        window.scrollTo(0, targetScroll);
+        sessionStorage.removeItem("pageScrollPercent");
+        console.log(targetScroll);
     }
-    console.log(window.scrollY);
-  });
-  window.addEventListener("beforeunload", () => {
-    sessionStorage.setItem("pageScrollPosition", window.scrollY);
-  });
+});
 
+window.addEventListener("beforeunload", () => {
+    const maxPageScroll = document.documentElement.scrollHeight - document.documentElement.clientHeight;
 
+    const scrollPercent = maxPageScroll > 0 ? window.scrollY / maxPageScroll : 0;
 
-fetch('/receipts/summary')
-.then(res => res.json())
-.then(data => {
+    sessionStorage.setItem("pageScrollPercent", scrollPercent);
+});
+
+//Draw Summrize chart
+
+fetch('/receipts/summary').then(res => res.json()).then(data => {
     const ctx = document.getElementById('receiptsSummaryChart').getContext('2d');
     new Chart(ctx, {
         type: 'bar',
