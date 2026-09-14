@@ -91,7 +91,7 @@ Receipt table with sorting, filter functions
                ))
            db.session.commit()
    ```
-   You can comment it back out after the first successful run — `receipts.db` will persist between runs. However, you can also use the test receipts.db uploaded on Git (This is intentional, didn't the db into .gitignore for easier testing)
+   You can comment it back out after the first successful run — `receipts.db` will persist between runs. However, you can also use the test receipts.db uploaded on Git (This is intentional, didn't put the db into .gitignore for easier testing)
 
 3. **Run the app:**
    ```bash
